@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14.1
+    ports:
+    - '5432:5432'
+    volumes:
+    - './tmp/postgres:/var/lib/postgresql/data'
+    env_file:
+    - './.env'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+    - '8080:80'
+    env_file:
+    - './.env'
+    depends_on:
+    - postgres
+    volumes:
+    - './tmp/pgadmin:/var/lib/pgadmin'
