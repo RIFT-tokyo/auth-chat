@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
-import { User } from './users.entity';
+import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 
@@ -17,7 +17,7 @@ export class UsersService {
   }
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({relations: ['rooms']});
   }
 
   async createUser(user: Partial<CreateUserDto>): Promise<User> {
