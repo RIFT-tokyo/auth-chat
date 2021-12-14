@@ -21,3 +21,16 @@ services:
     - postgres
     volumes:
     - './tmp/pgadmin:/var/lib/pgadmin'
+
+  api:
+    image: node:16.13
+    ports:
+    - '3000:3000'
+    env_file:
+    - './.env'
+    depends_on:
+    - postgres
+    volumes:
+    - './api:/usr/src/app'
+    working_dir: /usr/src/app
+    command: "yarn start:dev"
