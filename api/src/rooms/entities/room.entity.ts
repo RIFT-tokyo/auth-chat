@@ -1,5 +1,5 @@
 import { User } from "src/users/entities/users.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Room {
@@ -11,8 +11,11 @@ export class Room {
 
   @ManyToOne(
     () => User,
-    user => user.rooms,
-    // { eager: true },
+    user => user.own_rooms,
   )
   owner: User;
+
+  @ManyToMany(() => User, user => user.join_rooms)
+  @JoinTable()
+  users: User[];
 }

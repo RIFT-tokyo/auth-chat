@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
+import { JoinRoomDto } from './dto/join-room.dto';
+import { LeaveRoomDto } from './dto/leave-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 
@@ -18,11 +20,12 @@ export class RoomsService {
     const room = new Room()
     room.name = createRoomDto.name
     room.owner = await this.usersService.getUser(createRoomDto.owner_id)
+    room.users = [room.owner]
     return this.roomRepository.save(room);
   }
 
   async findAll() {
-    return this.roomRepository.find({relations: ['owner']});
+    return this.roomRepository.find({relations: ['owner', 'users']});
   }
 
   async findOne(id: number) {
@@ -36,5 +39,29 @@ export class RoomsService {
 
   async remove(id: number) {
     return this.roomRepository.delete(id);
+  }
+
+  async join(id: number, joinRoomDto: JoinRoomDto) {
+    const room = await this.roomRepository.findOne(id);
+    const user = await this.usersService.getUser(joinRoomDto.user_id);
+
+    await getConnection()
+    .createQueryBuilder()
+    .relation(Room, "users")
+    .of(room)
+    .add(user);
+    return this.roomRepository.save(room);
+  }
+
+  async leave(id: number, leaveRoomDto: LeaveRoomDto) {
+    const room = await this.roomRepository.findOne(id);
+    const user = await this.usersService.getUser(leaveRoomDto.user_id);
+
+    await getConnection()
+    .createQueryBuilder()
+    .relation(Room, "users")
+    .of(room)
+    .remove(user);
+    return this.roomRepository.save(room);
   }
 }

@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { JoinRoomDto } from './dto/join-room.dto';
+import { LeaveRoomDto } from './dto/leave-room.dto';
 
 @Controller('rooms')
 export class RoomsController {
@@ -18,17 +20,27 @@ export class RoomsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roomsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.roomsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    return this.roomsService.update(+id, updateRoomDto);
+  update(@Param('id') id: number, @Body() updateRoomDto: UpdateRoomDto) {
+    return this.roomsService.update(id, updateRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roomsService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.roomsService.remove(id);
+  }
+
+  @Post(':id/join')
+  join(@Param('id') id: number, @Body() joinRoomDto: JoinRoomDto) {
+    return this.roomsService.join(id, joinRoomDto);
+  }
+
+  @Post(':id/leave')
+  leave(@Param('id') id: number, @Body() leaveRoomDto: LeaveRoomDto) {
+    return this.roomsService.leave(id, leaveRoomDto);
   }
 }

@@ -1,5 +1,5 @@
 import { Room } from "src/rooms/entities/room.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -20,5 +20,8 @@ export class User {
     room => room.owner,
     { cascade: true },
   )
-  rooms: Room[];
+  own_rooms: Room[];
+
+  @ManyToMany(() => Room, room => room.users)
+  join_rooms: Room[];
 }

@@ -17,7 +17,7 @@ export class UsersService {
   }
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find({relations: ['rooms']});
+    return this.userRepository.find({relations: ['own_rooms', 'join_rooms']});
   }
 
   async createUser(user: Partial<CreateUserDto>): Promise<User> {
