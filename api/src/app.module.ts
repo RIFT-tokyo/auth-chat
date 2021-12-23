@@ -9,6 +9,8 @@ import { ConfigModule } from '@nestjs/config';
 import { User } from './users/entities/users.entity';
 import { RoomsModule } from './rooms/rooms.module';
 import { Room } from './rooms/entities/room.entity';
+import { MessagesModule } from './messages/messages.module';
+import { Message } from './messages/entities/message.entity';
 
 @Module({
   imports: [
@@ -22,12 +24,13 @@ import { Room } from './rooms/entities/room.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Room],
+      entities: [User, Room, Message],
       synchronize: true,
       logging: true,
     }),
     UsersModule,
-    RoomsModule
+    RoomsModule,
+    MessagesModule
   ],
   controllers: [AppController],
   providers: [AppService],
