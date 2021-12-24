@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import reducers from './reducers';
 import { socketMiddleware } from './middleware/socketMiddleware';
 
-const baseUrl = 'http://localhost:3000';
+const baseUrl = 'http://localhost:2999';
 
 const store = createStore(reducers, applyMiddleware(socketMiddleware(baseUrl || '')));
 

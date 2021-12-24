@@ -3,9 +3,15 @@ import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 
-@WebSocketGateway()
+@WebSocketGateway(2999, { cors: true })
 export class MessagesGateway {
   constructor(private readonly messagesService: MessagesService) {}
+
+  @SubscribeMessage('simple-chat-message')
+  ping(@MessageBody() createMessageDto: CreateMessageDto) {
+    console.log('ping');
+    // return this.messagesService.create(createMessageDto);
+  }
 
   @SubscribeMessage('createMessage')
   create(@MessageBody() createMessageDto: CreateMessageDto) {

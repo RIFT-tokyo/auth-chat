@@ -26,6 +26,7 @@ services:
     image: node:16.13
     ports:
     - '3000:3000'
+    - '2999:2999'
     env_file:
     - './.env'
     depends_on:
@@ -34,3 +35,14 @@ services:
     - './api:/usr/src/app'
     working_dir: /usr/src/app
     command: "yarn start:dev"
+
+  client:
+    image: node:16.13
+    ports:
+    - '3001:3001'
+    depends_on:
+    - api
+    volumes:
+    - './client:/usr/src/app'
+    working_dir: /usr/src/app
+    command: "yarn start"
