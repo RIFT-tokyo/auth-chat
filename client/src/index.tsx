@@ -3,10 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import reducers from './reducers';
+import { socketMiddleware } from './middleware/socketMiddleware';
+
+const baseUrl = 'http://localhost:3000';
+
+const store = createStore(reducers, applyMiddleware(socketMiddleware(baseUrl || '')));
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
