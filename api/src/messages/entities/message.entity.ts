@@ -19,3 +19,11 @@ export class Message {
   @CreateDateColumn()
   created_at: Date;
 }
+
+
+// export interface Message {
+//   server: string;
+//   channel: string;
+//   from: string;
+//   msg: string;
+// }

@@ -20,8 +20,8 @@ const SendMessage = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       handleSubmit({
         type: 'channelMessage',
-        channel: 'general',
-        from: 'test user',
+        channel: '6',
+        from: '10',
         msg: chatMessage
       })
     }

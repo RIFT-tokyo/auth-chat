@@ -17,8 +17,12 @@ export class MessagesService {
     private readonly roomsService: RoomsService,
   ) {}
 
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
+  async create(createMessageDto: Partial<CreateMessageDto>) {
+    const message = new Message();
+    message.message = createMessageDto.msg;
+    message.room = await this.roomsService.findOne(+createMessageDto.channel);
+    message.sender = await this.usersService.getUser(+createMessageDto.from);
+    return this.messageRepository.save(message);
   }
 
   findAll() {

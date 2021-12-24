@@ -8,12 +8,6 @@ export class MessagesGateway {
   constructor(private readonly messagesService: MessagesService) {}
 
   @SubscribeMessage('simple-chat-message')
-  ping(@MessageBody() createMessageDto: CreateMessageDto) {
-    console.log('ping');
-    // return this.messagesService.create(createMessageDto);
-  }
-
-  @SubscribeMessage('createMessage')
   create(@MessageBody() createMessageDto: CreateMessageDto) {
     return this.messagesService.create(createMessageDto);
   }
