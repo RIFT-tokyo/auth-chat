@@ -16,6 +16,10 @@ export class UsersService {
     return this.userRepository.findOne(id);
   }
 
+  async getUserByName(name: string): Promise<User> {
+    return this.userRepository.findOne({ name });
+  }
+
   async getUsers(): Promise<User[]> {
     return this.userRepository.find({relations: ['own_rooms', 'join_rooms']});
   }

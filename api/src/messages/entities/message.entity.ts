@@ -7,11 +7,11 @@ export class Message {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Room)
-  room: Room;
+  @ManyToOne(() => Room, { nullable: false })
+  room!: Room;
 
-  @ManyToOne(() => User)
-  sender: User;
+  @ManyToOne(() => User, { nullable: false })
+  sender!: User;
 
   @Column({ length: 140 })
   message: string;

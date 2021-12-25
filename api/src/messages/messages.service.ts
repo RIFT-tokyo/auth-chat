@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { create } from 'domain';
 import { Repository } from 'typeorm';
@@ -21,7 +21,7 @@ export class MessagesService {
     const message = new Message();
     message.message = createMessageDto.msg;
     message.room = await this.roomsService.findOne(+createMessageDto.channel);
-    message.sender = await this.usersService.getUser(+createMessageDto.from);
+    message.sender = await this.usersService.getUserByName(createMessageDto.from);
     return this.messageRepository.save(message);
   }
 
