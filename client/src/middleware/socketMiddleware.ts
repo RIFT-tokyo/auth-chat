@@ -11,9 +11,10 @@ export const socketMiddleware = (baseUrl: string) => {
 		return (next: Dispatch<AnyAction>) => (action: SocketActions) => {
 			// if (action.type === ACTION.SIGN_IN) {
 				// listner = setupSocketListner(socket, storeAPI)
+			if (action.type === ACTION.INITIALIZE_SOCKET) {
 				setupSocketListner(socket, storeAPI);
+			}
 			// }
-
 
 			if (action.type === ACTION.SEND_SOCKET_MESSAGE) {
 				socket.emit('simple-chat-message', action.payload);

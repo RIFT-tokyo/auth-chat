@@ -1,23 +1,24 @@
+import { useSelector } from 'react-redux';
+import { StoreState } from '../../reducers';
+import { Message } from '../../reducers/chatReducer';
 
-interface Message {
-	from: string;
-	content: string;
-	date: Date;
-};
 
 const Messages = () => {
-	let messages: Message[] = [{from: 'John', content: 'Hello', date: new Date()}, {from: 'Bob', content: 'Hello John', date: new Date()}];
+	const chatStore = useSelector((state: StoreState) => state.chat);
+
+	let messages: Message[] = chatStore.channels['1'];
 	return (
 		<>
+			<div>{messages.length}</div>
 			<div>
 				{messages.map((message, index) => {
 					return (
 						<div key={index}>
 							<span>{message.from}</span>
 							<br />
-							<span>{message.content}</span>
+							<span>{message.msg}</span>
 							<br />
-							<span>{message.date.toString()}</span>
+							<span>{message.date}</span>
 						</div>
 					);
 				})}
