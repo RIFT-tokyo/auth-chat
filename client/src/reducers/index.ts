@@ -1,5 +1,6 @@
 import { chatReducer, ChatStore } from './chatReducer';
 import { combineReducers } from 'redux';
+import { userReducer, UserStore } from './userReducer';
 
 export interface StoreState {
   chat: ChatStore;

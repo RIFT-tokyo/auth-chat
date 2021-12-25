@@ -1,4 +1,4 @@
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { Dispatch } from "react";
 import { AnyAction, MiddlewareAPI } from 'redux';
 import { ACTION, SocketActions } from "../actions/types";
@@ -6,10 +6,16 @@ import { ACTION, SocketActions } from "../actions/types";
 export const socketMiddleware = (baseUrl: string) => {
 	return (storeAPI: MiddlewareAPI) => {
 		let socket = io(baseUrl);
+		// let listener: SocketIOClient.Emitter;
 
 		return (next: Dispatch<AnyAction>) => (action: SocketActions) => {
+			// if (action.type === ACTION.SIGN_IN) {
+				// listner = setupSocketListner(socket, storeAPI)
+				setupSocketListner(socket, storeAPI);
+			// }
+
+
 			if (action.type === ACTION.SEND_SOCKET_MESSAGE) {
-				console.log('きてる')
 				socket.emit('simple-chat-message', action.payload);
 				return;
 			}
@@ -18,4 +24,15 @@ export const socketMiddleware = (baseUrl: string) => {
 		}
 
 	}
+}
+
+const setupSocketListner = (socket: Socket, storeAPI: MiddlewareAPI) => {
+	return socket.on('update', (action: any) => {
+		if (action.type === 'message') {
+			storeAPI.dispatch({
+				type: ACTION.RECIEVE_SOCKET_MESSAGE,
+				payload: action.payload
+			});
+		}
+	})
 }
