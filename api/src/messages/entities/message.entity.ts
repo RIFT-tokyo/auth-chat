@@ -1,14 +1,15 @@
 import { User } from "src/users/entities/users.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Room } from 'src/rooms/entities/room.entity';
+// import { Room } from 'src/rooms/entities/room.entity';
+import { Channel } from '../../channels/entities/channel.entity';
 
 @Entity()
 export class Message {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Room, { nullable: false })
-  room!: Room;
+  @ManyToOne(() => Channel, { nullable: false })
+  channel!: Channel;
 
   @ManyToOne(() => User, { nullable: false })
   sender!: User;

@@ -4,14 +4,16 @@ import { MessagesGateway } from './messages.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 import { UsersModule } from '../users/users.module';
-import { RoomsModule } from '../rooms/rooms.module';
+import { ChannelsModule } from 'src/channels/channels.module';
+// import { RoomsModule } from '../rooms/rooms.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Message]),
     UsersModule,
-    RoomsModule,
+    // RoomsModule,
+    ChannelsModule,
   ],
-  providers: [MessagesGateway, MessagesService]
+  providers: [MessagesGateway, MessagesService],
 })
 export class MessagesModule {}

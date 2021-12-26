@@ -6,7 +6,8 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
 import { UsersService } from 'src/users/users.service';
-import { RoomsService } from 'src/rooms/rooms.service';
+import { ChannelsService } from 'src/channels/channels.service';
+// import { RoomsService } from 'src/rooms/rooms.service';
 
 @Injectable()
 export class MessagesService {
@@ -14,19 +15,24 @@ export class MessagesService {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     private readonly usersService: UsersService,
-    private readonly roomsService: RoomsService,
+    // private readonly roomsService: RoomsService,
+    private readonly channelsService: ChannelsService,
   ) {}
 
   async create(createMessageDto: Partial<CreateMessageDto>) {
     const message = new Message();
     message.message = createMessageDto.msg;
-    message.room = await this.roomsService.findOne(+createMessageDto.channel);
+    message.channel = await this.channelsService.findOne(+createMessageDto.channel);
     message.sender = await this.usersService.getUserByName(createMessageDto.from);
     return this.messageRepository.save(message);
   }
 
+  async getUserData(username: string) {
+    const messages = await this.messageRepository.find();
+  }
+
   findAll() {
-    return `This action returns all messages`;
+    return this.messageRepository.find();
   }
 
   findOne(id: number) {

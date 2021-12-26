@@ -16,6 +16,11 @@ export class UsersController {
     return this.userService.getUsers();
   }
 
+  @Get(':username/data')
+  async getUserData(@Param('username') username: string) {
+    return this.userService.getUserData(username);
+  }
+
   @Post('')
   async createUser(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);

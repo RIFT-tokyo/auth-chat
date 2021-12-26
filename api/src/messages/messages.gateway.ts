@@ -11,7 +11,7 @@ export class MessagesGateway {
   @SubscribeMessage('simple-chat-message')
   async create(@ConnectedSocket() client: Socket, @MessageBody() createMessageDto: CreateMessageDto) {
     const message = await this.messagesService.create(createMessageDto);
-    let action = {type: 'message', payload: {channel: message.room.id, from: message.sender.name, msg: message.message}};
+    let action = {type: 'message', payload: {channel: message.channel.id, from: message.sender.name, msg: message.message}};
     client.emit('update', action);
     return message;
   }

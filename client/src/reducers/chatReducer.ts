@@ -29,6 +29,8 @@ export const chatReducer = (state: ChatStore = initialSteate, action: any) => {
           [channel]: [...state.channels[channel], {from: from, msg: msg, date: date}]
         }
       }
+    case ACTION.GET_INITIAL_DATA:
+      return state;
     default:
       return state;
   }

@@ -1,16 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersService } from './users/users.service';
-import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './users/entities/users.entity';
-import { RoomsModule } from './rooms/rooms.module';
-import { Room } from './rooms/entities/room.entity';
 import { MessagesModule } from './messages/messages.module';
-import { Message } from './messages/entities/message.entity';
+import { ChannelsModule } from './channels/channels.module';
 
 @Module({
   imports: [
@@ -24,13 +19,13 @@ import { Message } from './messages/entities/message.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Room, Message],
-      synchronize: true,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: false,
       logging: true,
     }),
     UsersModule,
-    RoomsModule,
-    MessagesModule
+    MessagesModule,
+    ChannelsModule
   ],
   controllers: [AppController],
   providers: [AppService],

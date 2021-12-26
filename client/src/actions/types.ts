@@ -1,7 +1,10 @@
+import { Message } from '../reducers/chatReducer';
+
 export enum ACTION {
   RECIEVE_SOCKET_MESSAGE,
   SEND_SOCKET_MESSAGE,
   INITIALIZE_SOCKET,
+  GET_INITIAL_DATA,
 }
 
 export type ChatActionTypes =
@@ -26,6 +29,11 @@ export type RecieveMessageAction = {
   payload: RecieveMessageData;
 }
 
+export type LoadUserDataAction = {
+  type: ACTION.GET_INITIAL_DATA;
+  payload: LoadInitialData;
+}
+
 export interface SendMessageData {
   type: 'channelMessage';
 //   server: string;
@@ -40,4 +48,10 @@ export interface RecieveMessageData {
   from: string;
   msg: string;
   date: Date;
+}
+
+export interface LoadInitialData {
+  channnels: {
+    [channelName: string]: Message[];
+  };
 }

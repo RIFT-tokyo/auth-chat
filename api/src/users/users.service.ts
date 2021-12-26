@@ -20,8 +20,12 @@ export class UsersService {
     return this.userRepository.findOne({ name });
   }
 
+  async getUserData(name: string) {
+    // find all messages related to the user
+  }
+
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find({relations: ['own_rooms', 'join_rooms']});
+    return this.userRepository.find();
   }
 
   async createUser(user: Partial<CreateUserDto>): Promise<User> {

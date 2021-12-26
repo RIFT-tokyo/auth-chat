@@ -9,3 +9,19 @@ export const recieveMessage = (message: RecieveMessageData): RecieveMessageActio
 	type: ACTION.RECIEVE_SOCKET_MESSAGE,
 	payload: message
 });
+
+export const loadUserData = (userID: string):  => ({
+
+	/*
+axios(/user/data?userName=tkomatsu)
+
+{
+	"tkomatsu": {
+	"channels": {
+		"general": Messages[],
+		"random": Messages[],
+	}
+}
+}
+
+*/
