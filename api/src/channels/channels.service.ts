@@ -13,7 +13,9 @@ export class ChannelsService {
   ) {}
 
   async create(createChannelDto: CreateChannelDto) {
-    return this.channelRepogitory.create(createChannelDto);
+    const newChannel = await this.channelRepogitory.create(createChannelDto);
+    await this.channelRepogitory.save(newChannel);
+    return newChannel;
   }
 
   findAll() {
@@ -21,7 +23,7 @@ export class ChannelsService {
   }
 
   async findOne(id: number) {
-    return this.channelRepogitory.findOne({ id });
+    return await this.channelRepogitory.findOne({ id });
   }
 
   async update(id: number, updateChannelDto: UpdateChannelDto) {
@@ -29,7 +31,7 @@ export class ChannelsService {
     if (!updateChannel) {
       throw new Error('Channel not found');
     }
-    return this.channelRepogitory.update(id, updateChannelDto);
+    return await this.channelRepogitory.update(id, updateChannelDto);
   }
 
   async remove(id: number) {
@@ -37,6 +39,6 @@ export class ChannelsService {
     if (!channel) {
       throw new Error('Channel not found');
     }
-    return this.channelRepogitory.remove(channel);
+    return await this.channelRepogitory.remove(channel);
   }
 }

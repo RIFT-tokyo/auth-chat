@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesGateway } from './messages.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,10 +10,11 @@ import { ChannelsModule } from 'src/channels/channels.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Message]),
-    UsersModule,
+    forwardRef(()=> UsersModule),
     // RoomsModule,
     ChannelsModule,
   ],
   providers: [MessagesGateway, MessagesService],
+  exports: [MessagesService],
 })
 export class MessagesModule {}

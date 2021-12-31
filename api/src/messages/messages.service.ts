@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { create } from 'domain';
 import { Repository } from 'typeorm';
@@ -14,6 +14,7 @@ export class MessagesService {
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     // private readonly roomsService: RoomsService,
     private readonly channelsService: ChannelsService,
@@ -29,6 +30,22 @@ export class MessagesService {
 
   async getUserData(username: string) {
     const messages = await this.messageRepository.find();
+    console.log(messages);
+    let data: any = {};
+    messages.forEach((msg: Message) => {
+      if (data[msg.channel.name] === undefined) {
+        data[msg.channel.name] = [];
+      }
+
+      if (username !== null && msg.message !== null) {
+        data[msg.channel.name].push({
+          from: msg.sender.name,
+          msg: msg.message,
+          date: msg.created_at
+        })
+      }
+    });
+    return data;
   }
 
   findAll() {
