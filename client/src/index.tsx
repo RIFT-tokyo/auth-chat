@@ -7,10 +7,11 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import reducers from './reducers';
 import { socketMiddleware } from './middleware/socketMiddleware';
+import thunk from 'redux-thunk';
 
 const baseUrl = 'http://localhost:2999';
 
-const store = createStore(reducers, applyMiddleware(socketMiddleware(baseUrl || '')));
+const store = createStore(reducers, applyMiddleware(thunk, socketMiddleware(baseUrl || '')));
 
 ReactDOM.render(
   <React.StrictMode>

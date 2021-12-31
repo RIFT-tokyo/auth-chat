@@ -8,7 +8,7 @@ export interface Message {
 
 export interface ChatStore {
   channels: {
-    [channelName: string]: Message[];
+    [channelID: string]: Message[];
   }
 }
 
@@ -30,7 +30,10 @@ export const chatReducer = (state: ChatStore = initialSteate, action: any) => {
         }
       }
     case ACTION.GET_INITIAL_DATA:
-      return state;
+      return {
+        ...state,
+        channels: action.payload
+      };
     default:
       return state;
   }

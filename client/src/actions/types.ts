@@ -52,6 +52,6 @@ export interface RecieveMessageData {
 
 export interface LoadInitialData {
   channnels: {
-    [channelName: string]: Message[];
+    [channelID: string]: Message[];
   };
 }

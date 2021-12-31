@@ -4,6 +4,7 @@ import SendMessage from "../SendMessage/SendMessage";
 import Sidebar from "../Sidebar/Sidebar";
 import { useDispatch } from 'react-redux';
 import { ACTION } from '../../actions/types';
+import { loadUserData } from '../../actions/index';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
@@ -11,8 +12,9 @@ const Dashboard = () => {
 	useEffect(() => {
 		console.log("Dashboard");
 		dispatch({ type: ACTION.INITIALIZE_SOCKET });
+		dispatch(loadUserData('nop'));
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [dispatch]);
 
 	return (
 	  <div className="dashboard">
