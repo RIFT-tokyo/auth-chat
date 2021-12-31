@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:14.1
+    ports:
+    - '5432:5432'
+    volumes:
+    - './.data/postgres:/var/lib/postgresql/data'
+    env_file:
+    - './.env'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+    - '8081:80'
+    env_file:
+    - './.env'
+    depends_on:
+    - postgres
+    volumes:
+    - './.data/pgadmin:/var/lib/pgadmin'
+
+  # api:
+  #   image: node:16.13
+  #   ports:
+  #   - '3000:3000'
+  #   - '3001:3001'
+  #   env_file:
+  #   - './.env'
+  #   depends_on:
+  #   - postgres
+  #   volumes:
+  #   - './api:/usr/src/app'
+  #   working_dir: /usr/src/app
+  #   command: "yarn start:dev"
+
+  # client:
+  #   image: node:16.13
+  #   ports:
+  #   - '8080:3000'
+  #   depends_on:
+  #   - api
+  #   volumes:
+  #   - './client:/usr/src/app'
+  #   working_dir: /usr/src/app
+  #   command: "yarn start"
+
+  swagger-editor:
+    image: swaggerapi/swagger-editor
+    container_name: "swagger-editor"
+    ports:
+      - '80:8080'
