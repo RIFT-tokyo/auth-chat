@@ -12,11 +12,7 @@ tags:
 paths:
   '/users/{id}':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/user-id'
     get:
       summary: Get User Info by User ID
       tags:
@@ -107,6 +103,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Server'
+                  private_messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PrivateMessage'
               examples:
                 example-1:
                   value:
@@ -127,6 +127,74 @@ paths:
                                 sended_at: '2019-08-24T14:15:22Z'
       operationId: get-users-userId-data
       description: ''
+  /me/private-messages:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrivateMessage'
+              examples:
+                example-1:
+                  value:
+                    - id: 0
+                      destination:
+                        id: 142
+                        name: nop
+                        email: nop@42tokyo.jp
+                      messages:
+                        - id: 0
+                          from:
+                            id: 142
+                            name: nop
+                            email: nop@42tokyo.jp
+                          to:
+                            id: 142
+                            name: nop
+                            email: nop@42tokyo.jp
+                          content: string
+                          sended_at: '2019-08-24T14:15:22Z'
+      operationId: get-me-private-messages
+  '/me/private-messages/{id}':
+    parameters:
+      - $ref: '#/components/parameters/user-id'
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateMessage'
+              examples:
+                example-1:
+                  value:
+                    id: 0
+                    destination:
+                      id: 142
+                      name: nop
+                      email: nop@42tokyo.jp
+                    messages:
+                      - id: 0
+                        from:
+                          id: 142
+                          name: nop
+                          email: nop@42tokyo.jp
+                        to:
+                          id: 142
+                          name: nop
+                          email: nop@42tokyo.jp
+                        content: string
+                        sended_at: '2019-08-24T14:15:22Z'
+      operationId: get-me-private-messages-id
   /auth/register:
     post:
       summary: Create New User
@@ -272,11 +340,7 @@ paths:
       description: ''
   '/servers/{id}':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/server-id'
     get:
       summary: Your GET endpoint
       tags:
@@ -289,6 +353,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Server'
       operationId: get-servers-id
+      description: ''
     put:
       summary: ''
       operationId: put-servers-id
@@ -358,11 +423,7 @@ paths:
     parameters: []
   '/channels/{id}':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/channel-id'
     get:
       summary: Your GET endpoint
       tags:
@@ -495,18 +556,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Channel'
+      required:
+        - id
+        - name
+        - channels
     Channel:
       title: Channel
       type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/Message'
       x-examples:
         example-1:
           id: 1
@@ -521,25 +577,81 @@ components:
               content: Don't Panic.
               sended_at: '2019-08-24T15:15:22Z'
       description: ''
-    Message:
-      title: Message
-      type: object
       properties:
         id:
           type: integer
-        sender:
+        name:
           type: string
-        content:
-          type: string
-        sended_at:
-          type: string
-          format: date-time
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+      required:
+        - id
+        - name
+        - messages
+    Message:
+      title: Message
+      type: object
       x-examples:
         example-1:
           id: 42
           sender: norminet
           content: hello 42Tokyo
           sended_at: '2020-06-22T00:42:42Z'
+      properties:
+        id:
+          type: integer
+        from:
+          $ref: '#/components/schemas/User'
+        to:
+          $ref: '#/components/schemas/User'
+        content:
+          type: string
+        sended_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - from
+        - content
+        - sended_at
+    PrivateMessage:
+      title: Private Message
+      type: object
+      x-examples:
+        example-1:
+          id: 0
+          destination:
+            id: 142
+            name: nop
+            email: nop@42tokyo.jp
+          messages:
+            - id: 0
+              from:
+                id: 142
+                name: nop
+                email: nop@42tokyo.jp
+              to:
+                id: 142
+                name: nop
+                email: nop@42tokyo.jp
+              content: string
+              sended_at: '2019-08-24T14:15:22Z'
+      properties:
+        id:
+          type: integer
+        destination:
+          $ref: '#/components/schemas/User'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+      required:
+        - id
+        - destination
+        - messages
+      description: ''
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -547,5 +659,28 @@ components:
       flows:
         password:
           scopes: {}
+  parameters:
+    user-id:
+      name: user id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: user id
+    server-id:
+      name: server-id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: server id
+    channel-id:
+      name: channel-id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: channel id
+  examples: {}
 security:
   - OAuth2: []
