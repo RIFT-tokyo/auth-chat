@@ -1,0 +1,551 @@
+openapi: 3.0.0
+info:
+  title: Discord Clone API
+  version: '1.0'
+  description: Backend for Discord Clone App
+servers:
+  - url: 'http://localhost:3000'
+    description: Local
+tags:
+  - name: user
+    description: Endpoint for user
+paths:
+  '/users/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Get User Info by User ID
+      tags:
+        - user
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                Get User Alice Smith:
+                  value:
+                    id: 142
+                    firstName: Alice
+                    lastName: Smith
+                    email: alice.smith@gmail.com
+                    dateOfBirth: '1997-10-31'
+                    emailVerified: true
+                    signUpDate: '2019-08-24'
+        '404':
+          description: User Not Found
+      operationId: get-users-userId
+      description: Retrieve the information of the user with the matching user ID.
+    put:
+      summary: Update User Information
+      tags:
+        - user
+      operationId: patch-users-userId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example-1:
+                  value:
+                    id: 142
+                    name: nop
+                    email: nop@42tokyo.jp
+        '404':
+          description: User Not Found
+        '409':
+          description: Email Already Taken
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  description: 'If a new email is given, the user''s email verified property will be set to false.'
+                  format: email
+                password:
+                  type: string
+                  format: password
+            examples:
+              example-1:
+                value:
+                  name: nop
+                  email: nop@example.com
+                  password: pa$$word
+        description: Patch user properties to update.
+  /me:
+    parameters: []
+    get:
+      summary: Your GET endpoint
+      tags:
+        - user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  me:
+                    $ref: '#/components/schemas/User'
+                  servers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Server'
+              examples:
+                example-1:
+                  value:
+                    me:
+                      id: 142
+                      name: nop
+                      email: nop@42tokyo.jp
+                    servers:
+                      - id: 0
+                        name: string
+                        channels:
+                          - id: 0
+                            name: string
+                            messages:
+                              - id: 0
+                                sender: string
+                                content: string
+                                sended_at: '2019-08-24T14:15:22Z'
+      operationId: get-users-userId-data
+      description: ''
+  /auth/register:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example-1:
+                  value:
+                    id: 142
+                    name: nop
+                    email: nop@42tokyo.jp
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - name
+                - email
+            examples:
+              Create User Norminet:
+                value:
+                  name: norminet
+                  email: norminet@42.fr
+                  password: P@ssw0rd
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+      tags:
+        - auth
+      security: []
+    parameters: []
+  /auth/login:
+    parameters: []
+    post:
+      summary: Login
+      operationId: post-auth-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      description: Endpoint for login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                password:
+                  type: string
+                  format: password
+              required:
+                - name
+                - password
+            examples:
+              example:
+                value:
+                  name: norminet
+                  password: P@ssw0rd
+        description: ''
+      tags:
+        - auth
+  /auth/logout:
+    post:
+      summary: ''
+      operationId: post-auth-logout
+      responses:
+        '200':
+          description: OK
+      tags:
+        - auth
+  /servers:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - server
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+      operationId: get-servers
+    post:
+      summary: Create New Server
+      operationId: post-servers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                user_id:
+                  type: integer
+                  description: owner id
+              required:
+                - name
+                - user_id
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      tags:
+        - server
+      description: ''
+  '/servers/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - server
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+      operationId: get-servers-id
+    put:
+      summary: ''
+      operationId: put-servers-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+      tags:
+        - server
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                user_id:
+                  type: integer
+    delete:
+      summary: ''
+      operationId: delete-servers-id
+      responses:
+        '200':
+          description: OK
+      tags:
+        - server
+  /channels:
+    get:
+      summary: Get Channels List
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Channel'
+      operationId: get-Channels
+      tags:
+        - channel
+    post:
+      summary: Create Channel
+      operationId: post-Channels
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+      description: ''
+      tags:
+        - channel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    parameters: []
+  '/channels/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - channel
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+      operationId: get-Channels-id
+    put:
+      summary: ''
+      operationId: put-Channels-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+      tags:
+        - channel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    delete:
+      summary: ''
+      operationId: delete-Channels-id
+      responses:
+        '200':
+          description: OK
+      tags:
+        - channel
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      examples:
+        - id: 142
+          name: nop
+          email: nop@42tokyo.jp
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        name:
+          type: string
+          description: Username
+        email:
+          type: string
+          format: email
+      required:
+        - id
+        - name
+        - email
+      x-examples:
+        norminet:
+          id: 142
+          name: norminet
+          email: norminet@42.fr
+    Server:
+      title: Server
+      type: object
+      x-examples:
+        example-1:
+          id: 26
+          name: 42 Tokyo
+          channels:
+            - id: 1
+              name: general
+              messages:
+                - id: 1
+                  sender: norminet
+                  content: Hello 42Tokyo!
+                  sended_at: '2019-08-24T14:15:22Z'
+                - id: 3
+                  sender: nop
+                  content: Don't Panic.
+                  sended_at: '2019-08-24T15:42:00Z'
+            - id: 2
+              name: random
+              messages:
+                - id: 2
+                  sender: arthur
+                  content: So this is it.
+                  sended_at: '2019-08-24T15:41:22Z'
+                - id: 4
+                  sender: ford
+                  content: We are going to die.
+                  sended_at: '2019-08-24T15:42:22Z'
+                - id: 5
+                  sender: arthur
+                  content: Yes.
+                  sended_at: '2019-08-24T15:43:22Z'
+                - id: 6
+                  sender: arthur
+                  content: Except... no! Wait a minute!
+                  sended_at: '2019-08-24T15:44:22Z'
+                - id: 7
+                  sender: arthur
+                  content: What's this switch?
+                  sended_at: '2019-08-24T15:45:22Z'
+                - id: 8
+                  sender: arthur
+                  content: What? Where?
+                  sended_at: '2019-08-24T15:46:22Z'
+                - id: 9
+                  sender: ford
+                  content: 'No, I was only fooling.'
+                  sended_at: '2019-08-24T15:47:22Z'
+                - id: 10
+                  sender: ford
+                  content: We are going to die after all.
+                  sended_at: '2019-08-24T15:48:22Z'
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+    Channel:
+      title: Channel
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+      x-examples:
+        example-1:
+          id: 1
+          name: general
+          messages:
+            - id: 1
+              sender: norminet
+              content: Hello 42Tokyo!
+              sended_at: '2019-08-24T14:15:22Z'
+            - id: 3
+              sender: nop
+              content: Don't Panic.
+              sended_at: '2019-08-24T15:15:22Z'
+      description: ''
+    Message:
+      title: Message
+      type: object
+      properties:
+        id:
+          type: integer
+        sender:
+          type: string
+        content:
+          type: string
+        sended_at:
+          type: string
+          format: date-time
+      x-examples:
+        example-1:
+          id: 42
+          sender: norminet
+          content: hello 42Tokyo
+          sended_at: '2020-06-22T00:42:42Z'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: User login
+      flows:
+        password:
+          scopes: {}
+security:
+  - OAuth2: []
