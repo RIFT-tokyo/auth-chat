@@ -10,192 +10,7 @@ tags:
   - name: user
     description: Endpoint for user
 paths:
-  '/users/{id}':
-    parameters:
-      - $ref: '#/components/parameters/user-id'
-    get:
-      summary: Get User Info by User ID
-      tags:
-        - user
-      responses:
-        '200':
-          description: User Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Get User Alice Smith:
-                  value:
-                    id: 142
-                    firstName: Alice
-                    lastName: Smith
-                    email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
-        '404':
-          description: User Not Found
-      operationId: get-users-userId
-      description: Retrieve the information of the user with the matching user ID.
-    put:
-      summary: Update User Information
-      tags:
-        - user
-      operationId: patch-users-userId
-      responses:
-        '200':
-          description: User Updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                example-1:
-                  value:
-                    id: 142
-                    name: nop
-                    email: nop@42tokyo.jp
-        '404':
-          description: User Not Found
-        '409':
-          description: Email Already Taken
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                  format: email
-                password:
-                  type: string
-                  format: password
-            examples:
-              example-1:
-                value:
-                  name: nop
-                  email: nop@example.com
-                  password: pa$$word
-        description: Patch user properties to update.
-  /me:
-    parameters: []
-    get:
-      summary: Your GET endpoint
-      tags:
-        - user
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  me:
-                    $ref: '#/components/schemas/User'
-                  servers:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Server'
-                  private_messages:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PrivateMessage'
-              examples:
-                example-1:
-                  value:
-                    me:
-                      id: 142
-                      name: nop
-                      email: nop@42tokyo.jp
-                    servers:
-                      - id: 0
-                        name: string
-                        channels:
-                          - id: 0
-                            name: string
-                            messages:
-                              - id: 0
-                                sender: string
-                                content: string
-                                sended_at: '2019-08-24T14:15:22Z'
-      operationId: get-users-userId-data
-      description: ''
-  /me/private-messages:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PrivateMessage'
-              examples:
-                example-1:
-                  value:
-                    - id: 0
-                      destination:
-                        id: 142
-                        name: nop
-                        email: nop@42tokyo.jp
-                      messages:
-                        - id: 0
-                          from:
-                            id: 142
-                            name: nop
-                            email: nop@42tokyo.jp
-                          to:
-                            id: 142
-                            name: nop
-                            email: nop@42tokyo.jp
-                          content: string
-                          sended_at: '2019-08-24T14:15:22Z'
-      operationId: get-me-private-messages
-  '/me/private-messages/{id}':
-    parameters:
-      - $ref: '#/components/parameters/user-id'
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PrivateMessage'
-              examples:
-                example-1:
-                  value:
-                    id: 0
-                    destination:
-                      id: 142
-                      name: nop
-                      email: nop@42tokyo.jp
-                    messages:
-                      - id: 0
-                        from:
-                          id: 142
-                          name: nop
-                          email: nop@42tokyo.jp
-                        to:
-                          id: 142
-                          name: nop
-                          email: nop@42tokyo.jp
-                        content: string
-                        sended_at: '2019-08-24T14:15:22Z'
-      operationId: get-me-private-messages-id
-  /auth/register:
+  /v1/auth/register:
     post:
       summary: Create New User
       operationId: post-user
@@ -210,8 +25,8 @@ paths:
                 example-1:
                   value:
                     id: 142
-                    name: nop
-                    email: nop@42tokyo.jp
+                    name: norminet
+                    email: norminet@42.fr
         '400':
           description: Missing Required Information
         '409':
@@ -244,12 +59,12 @@ paths:
                   email: norminet@42.fr
                   password: P@ssw0rd
         description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
+      description: 新たなアカウントの登録。
       tags:
         - auth
       security: []
     parameters: []
-  /auth/login:
+  /v1/auth/login:
     parameters: []
     post:
       summary: Login
@@ -261,7 +76,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-      description: Endpoint for login
+              examples:
+                example-1:
+                  value:
+                    id: 142
+                    name: nop
+                    email: nop@42tokyo.jp
+      description: 既存アカウントにログインするために使う。これでトークンを取得する。
       requestBody:
         content:
           application/json:
@@ -284,18 +105,167 @@ paths:
         description: ''
       tags:
         - auth
-  /auth/logout:
+  /v1/auth/logout:
     post:
-      summary: ''
+      summary: Logout
       operationId: post-auth-logout
       responses:
         '200':
           description: OK
       tags:
         - auth
-  /servers:
+      description: アカウントからログアウトする。
+  '/v1/users/{id}':
+    parameters:
+      - $ref: '#/components/parameters/user-id'
     get:
-      summary: Your GET endpoint
+      summary: Get User Info by User ID
+      tags:
+        - user
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example-1:
+                  value:
+                    id: 142
+                    name: nop
+                    email: nop@42tokyo.jp
+        '404':
+          description: User Not Found
+      operationId: get-users-userId
+      description: Retrieve the information of the user with the matching user ID.
+      security: []
+    put:
+      summary: Update User Information
+      tags:
+        - user
+      operationId: patch-users-userId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example-1:
+                  value:
+                    id: 142
+                    name: nop
+                    email: nop@42tokyo.jp
+        '404':
+          description: User Not Found
+        '409':
+          description: Email Already Taken
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              example-1:
+                value:
+                  name: nop
+                  email: nop@example.com
+                  password: pa$$word
+        description: Patch user properties to update.
+  /v1/me:
+    parameters: []
+    get:
+      summary: Get Own Account Data
+      tags:
+        - user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  me:
+                    $ref: '#/components/schemas/User'
+                  servers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Server'
+                  private_messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PrivateMessage'
+              examples:
+                ネストされた全モデル:
+                  value:
+                    me:
+                      id: 142
+                      name: nop
+                      email: nop@42tokyo.jp
+                    servers:
+                      - id: 0
+                        name: string
+                        channels:
+                          - id: 0
+                            name: string
+                            messages:
+                              - id: 0
+                                from:
+                                  id: 142
+                                  name: nop
+                                  email: nop@42tokyo.jp
+                                to:
+                                  id: 142
+                                  name: nop
+                                  email: nop@42tokyo.jp
+                                content: string
+                                sended_at: '2019-08-24T14:15:22Z'
+                    private_messages:
+                      - id: 0
+                        destination:
+                          id: 142
+                          name: nop
+                          email: nop@42tokyo.jp
+                        messages:
+                          - id: 0
+                            from:
+                              id: 142
+                              name: nop
+                              email: nop@42tokyo.jp
+                            to:
+                              id: 142
+                              name: nop
+                              email: nop@42tokyo.jp
+                            content: string
+                            sended_at: '2019-08-24T14:15:22Z'
+                サーバーとDMの相手一覧だけ:
+                  value:
+                    me:
+                      id: 42
+                      name: nop
+                      email: nop@42tokyo.jp
+                    servers:
+                      - id: 1
+                        name: 42Tokyo
+                      - id: 2
+                        name: times
+                    private_messages:
+                      - id: 1
+                        destination:
+                          id: 21
+                          name: bunjiro
+                          email: bunjiro@42tokyo.jp
+      operationId: get-users-userId-data
+      description: |-
+        DM・サーバー毎のメッセージを含む全てのデータを取得する。
+        情報として多すぎるように思えるから、サーバーのIDと名前だけとって返すのがいいかも。
+  /v1/servers:
+    get:
+      summary: Get Server Information
       tags:
         - server
       responses:
@@ -304,8 +274,53 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Server'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Server'
+              examples:
+                ネストされた全モデル:
+                  value:
+                    - id: 0
+                      name: string
+                      channels:
+                        - id: 0
+                          name: string
+                          messages:
+                            - id: 0
+                              from:
+                                id: 142
+                                name: nop
+                                email: nop@42tokyo.jp
+                              to:
+                                id: 142
+                                name: nop
+                                email: nop@42tokyo.jp
+                              content: string
+                              sended_at: '2019-08-24T14:15:22Z'
+                サーバー一覧のみ:
+                  value:
+                    - id: 1
+                      name: 42tokyo
+                    - id: 2
+                      name: times
+                チャンネルまで:
+                  value:
+                    - id: 1
+                      name: 42tokyo
+                      channels:
+                        - id: 1
+                          name: general
+                        - id: 2
+                          name: random
+                    - id: 2
+                      name: times
+                      channels:
+                        - id: 1
+                          name: nop
+                        - id: 2
+                          name: bunjiro
       operationId: get-servers
+      description: サーバー一覧を取得する。チャネルの名前とIDだけで留めておくのがいいかも。
     post:
       summary: Create New Server
       operationId: post-servers
@@ -316,20 +331,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Server'
+              examples:
+                example-1:
+                  value:
+                    id: 1
+                    name: 42tokyo
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                user_id:
-                  type: integer
-                  description: owner id
-              required:
-                - name
-                - user_id
+              $ref: '#/components/schemas/Server'
+            examples:
+              example-1:
+                value:
+                  id: 1
+                  name: 42tokyo
           application/xml:
             schema:
               type: object
@@ -337,12 +353,12 @@ paths:
         description: ''
       tags:
         - server
-      description: ''
-  '/servers/{id}':
+      description: 新たにサーバーを作るためのエンドポイント。
+  '/v1/servers/{id}':
     parameters:
       - $ref: '#/components/parameters/server-id'
     get:
-      summary: Your GET endpoint
+      summary: Get Specified Server Information
       tags:
         - server
       responses:
@@ -352,10 +368,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Server'
+              examples:
+                ネストされた全モデル:
+                  value:
+                    id: 1
+                    name: 42tokyo
+                    channels:
+                      - id: 1
+                        name: general
+                        messages:
+                          - id: 0
+                            from:
+                              id: 142
+                              name: nop
+                              email: nop@42tokyo.jp
+                            content: hello world
+                            sended_at: '2019-08-24T14:15:22Z'
+                チャンネル名まで:
+                  value:
+                    id: 0
+                    name: 42tokyo
+                    channels:
+                      - id: 1
+                        name: general
+                      - id: 2
+                        name: random
       operationId: get-servers-id
-      description: ''
+      description: IDで指定したサーバーの中身を返す。ここではサーバー内の全チャンネル一覧を合わせて返すのが良さそう。
     put:
-      summary: ''
+      summary: Update Server Meta Data
       operationId: put-servers-id
       responses:
         '200':
@@ -364,18 +405,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Server'
+              examples:
+                example-1:
+                  value:
+                    id: 1
+                    name: 42tokyo
       tags:
         - server
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                user_id:
-                  type: integer
+              $ref: '#/components/schemas/Server'
+            examples:
+              example-1:
+                value:
+                  name: 42tokyo
+      description: サーバーの名前・所有者の変更。
     delete:
       summary: ''
       operationId: delete-servers-id
@@ -384,7 +430,8 @@ paths:
           description: OK
       tags:
         - server
-  /channels:
+      description: 指定したサーバーを削除する。
+  /v1/channels:
     get:
       summary: Get Channels List
       responses:
@@ -396,9 +443,29 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Channel'
+              examples:
+                全モデル:
+                  value:
+                    - id: 1
+                      name: general
+                      messages:
+                        - id: 1
+                          from:
+                            id: 142
+                            name: nop
+                            email: nop@42tokyo.jp
+                          content: hello world
+                          sended_at: '2019-08-24T14:15:22Z'
+                チャンネル名まで:
+                  value:
+                    - id: 1
+                      name: general
+                    - id: 2
+                      name: random
       operationId: get-Channels
       tags:
         - channel
+      description: モデルを入れ子にしているから、全チャネルのメッセージ全てを取得してしまいそう。モデルで各要素の上限を設定して、親モデルを取得する時は上限までで止めるといいかも。
     post:
       summary: Create Channel
       operationId: post-Channels
@@ -409,7 +476,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Channel'
-      description: ''
+      description: チャンネルを新たに作成する。
       tags:
         - channel
       requestBody:
@@ -421,11 +488,11 @@ paths:
                 name:
                   type: string
     parameters: []
-  '/channels/{id}':
+  '/v1/channels/{id}':
     parameters:
       - $ref: '#/components/parameters/channel-id'
     get:
-      summary: Your GET endpoint
+      summary: Get Specifed Channel Information
       tags:
         - channel
       responses:
@@ -435,7 +502,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Channel'
+              examples:
+                example-1:
+                  value:
+                    id: 1
+                    name: general
+                    messages:
+                      - id: 1
+                        from:
+                          id: 142
+                          name: nop
+                          email: nop@42tokyo.jp
+                        content: hello world
+                        sended_at: '2019-08-24T14:15:22Z'
+                      - id: 2
+                        from:
+                          id: 142
+                          name: nop
+                          email: nop@42tokyo.jp
+                        content: hello 42tokyo
+                        sended_at: '2019-08-25T14:15:22Z'
       operationId: get-Channels-id
+      description: |-
+        指定したチャンネルの情報を全て返す。
+        メッセージは直近20件くらいを返すとポータブルで良さそう。
     put:
       summary: ''
       operationId: put-Channels-id
@@ -446,16 +536,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Channel'
+              examples:
+                example-1:
+                  value:
+                    id: 1
+                    name: random
       tags:
         - channel
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/Channel'
+            examples:
+              example-1:
+                value:
+                  name: random
     delete:
       summary: ''
       operationId: delete-Channels-id
@@ -464,6 +560,53 @@ paths:
           description: OK
       tags:
         - channel
+  '/v1/channels/{id}/messages':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Get Messages in Specified Channel
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+              examples:
+                example-1:
+                  value:
+                    - id: 1
+                      from:
+                        id: 142
+                        name: nop
+                        email: nop@42tokyo.jp
+                      content: hello
+                      sended_at: '2019-08-24T14:15:22Z'
+      operationId: get-channels-id-messages
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: limit
+        - schema:
+            type: integer
+          in: query
+          name: offset
+        - schema:
+            type: string
+          in: query
+          name: order_by
+      description: |-
+        チャンネル内のメッセージの一覧を取得。上限100くらいにしておく（デフォルト20）。
+        クエリパラメータでレンジを指定する。
+        並び順もクエリで指定できると良いかも。
 components:
   schemas:
     User:
@@ -559,7 +702,6 @@ components:
       required:
         - id
         - name
-        - channels
     Channel:
       title: Channel
       type: object
@@ -589,7 +731,6 @@ components:
       required:
         - id
         - name
-        - messages
     Message:
       title: Message
       type: object
@@ -638,6 +779,7 @@ components:
                 email: nop@42tokyo.jp
               content: string
               sended_at: '2019-08-24T14:15:22Z'
+      description: ''
       properties:
         id:
           type: integer
@@ -650,8 +792,6 @@ components:
       required:
         - id
         - destination
-        - messages
-      description: ''
   securitySchemes:
     OAuth2:
       type: oauth2
