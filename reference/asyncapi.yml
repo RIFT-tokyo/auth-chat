@@ -1,0 +1,170 @@
+asyncapi: 2.2.0
+info:
+  title: Discord Clone Websocket API
+  version: 1.0.0
+  contact:
+    name: tkomatsu
+    url: https://github.com/tkomatsu
+  description: >
+    Discord Clone websocket API
+
+
+    You can quickly play with the API using
+    [websocat](https://github.com/vi/websocat#installation) like this:
+
+    ```bash
+
+    websocat ws://localhost:3001/v1/channels/{id}
+
+    ```
+servers:
+  public:
+    url: ws://localhost:3001
+    protocol: ws
+channels:
+  /v1/chat:
+    publish:
+      description: Send messages to the API
+      message:
+        oneOf:
+          - $ref: '#/components/messages/simple-chat-private-message'
+          - $ref: '#/components/messages/simple-chat-message'
+    subscribe:
+      description: Messages that you receive from the API
+      message:
+        oneOf:
+          - $ref: '#/components/messages/update-channel'
+          - $ref: '#/components/messages/update-private'
+components:
+  messages:
+    simple-chat-message:
+      payload:
+        type: object
+        properties:
+          type:
+            type: string
+            const: channelMessage
+          payload:
+            $ref: '#/components/schemas/ChannelMessagePayload'
+    simple-chat-private-message:
+      payload:
+        type: object
+        properties:
+          type:
+            type: string
+            const: privateMessage
+          payload:
+            $ref: '#/components/schemas/PrivateMessagePayload'
+    update-channel:
+      payload:
+        type: object
+        properties:
+          type:
+            type: string
+            const: message
+          payload:
+            $ref: '#/components/schemas/ChannelMessagePayload'
+    update-private:
+      payload:
+        type: object
+        properties:
+          type:
+            type: string
+            const: privateMessage
+          payload:
+            $ref: '#/components/schemas/PrivateMessagePayload'
+  schemas:
+    ChannelMessagePayload:
+      type: object
+      properties:
+        type:
+          type: string
+          const: chat-message
+        payload:
+          $ref: '#/components/schemas/Message'
+    PrivateMessagePayload:
+      type: object
+      properties:
+        type:
+          type: string
+          const: open-message
+        payload:
+          $ref: '#/components/schemas/PrivateMessage'
+    Message:
+      title: Message
+      type: object
+      properties:
+        server:
+          $ref: '#/components/schemas/Server'
+        channel:
+          $ref: '#/components/schemas/Channel'
+        from:
+          $ref: '#/components/schemas/User'
+        content:
+          type: string
+        sended_at:
+          type: string
+          format: date-time
+      required:
+        - server
+        - channel
+        - from
+        - content
+    PrivateMessage:
+      title: Private Message
+      type: object
+      description: ''
+      properties:
+        to:
+          $ref: '#/components/schemas/User'
+        from:
+          $ref: '#/components/schemas/User'
+        content:
+          type: string
+        sended_at:
+          type: string
+          format: date-time
+      required:
+        - to
+        - from
+        - content
+    User:
+      title: User
+      type: object
+      description: ''
+      examples:
+        - id: 142
+          name: nop
+          email: nop@42tokyo.jp
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        name:
+          type: string
+          description: Username
+      required:
+        - id
+        - name
+    Server:
+      title: Server
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+    Channel:
+      title: Channel
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
