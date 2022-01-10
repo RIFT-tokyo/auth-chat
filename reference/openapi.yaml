@@ -82,6 +82,7 @@ paths:
                     id: 142
                     name: nop
                     email: nop@42tokyo.jp
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
       description: 既存アカウントにログインするために使う。これでトークンを取得する。
       requestBody:
         content:
@@ -115,6 +116,12 @@ paths:
       tags:
         - auth
       description: アカウントからログアウトする。
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
   '/v1/users/{id}':
     parameters:
       - $ref: '#/components/parameters/user-id'
@@ -175,6 +182,12 @@ paths:
                   email: nop@example.com
                   password: pa$$word
         description: Patch user properties to update.
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
   /v1/me:
     parameters: []
     get:
@@ -263,6 +276,12 @@ paths:
       description: |-
         DM・サーバー毎のメッセージを含む全てのデータを取得する。
         情報として多すぎるように思えるから、サーバーのIDと名前だけとって返すのがいいかも。
+      parameters:
+        - schema:
+            type: string
+          in: header
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
+          name: Authorization
   /v1/servers:
     get:
       summary: Get Server Information
@@ -344,7 +363,6 @@ paths:
             examples:
               example-1:
                 value:
-                  id: 1
                   name: 42tokyo
           application/xml:
             schema:
@@ -354,6 +372,12 @@ paths:
       tags:
         - server
       description: 新たにサーバーを作るためのエンドポイント。
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
   '/v1/servers/{id}':
     parameters:
       - $ref: '#/components/parameters/server-id'
@@ -422,6 +446,12 @@ paths:
                 value:
                   name: 42tokyo
       description: サーバーの名前・所有者の変更。
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
     delete:
       summary: ''
       operationId: delete-servers-id
@@ -431,6 +461,12 @@ paths:
       tags:
         - server
       description: 指定したサーバーを削除する。
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
   /v1/channels:
     get:
       summary: Get Channels List
@@ -476,6 +512,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Channel'
+              examples:
+                example-1:
+                  value:
+                    id: '1'
+                    name: random
       description: チャンネルを新たに作成する。
       tags:
         - channel
@@ -487,6 +528,10 @@ paths:
               properties:
                 name:
                   type: string
+            examples:
+              example-1:
+                value:
+                  name: random
     parameters: []
   '/v1/channels/{id}':
     parameters:
@@ -560,6 +605,12 @@ paths:
           description: OK
       tags:
         - channel
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm...
   '/v1/channels/{id}/messages':
     parameters:
       - schema:
