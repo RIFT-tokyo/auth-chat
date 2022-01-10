@@ -2,9 +2,6 @@ asyncapi: 2.2.0
 info:
   title: Discord Clone Websocket API
   version: 1.0.0
-  contact:
-    name: tkomatsu
-    url: https://github.com/tkomatsu
   description: >
     Discord Clone websocket API
 
@@ -27,17 +24,17 @@ channels:
       description: Send messages to the API
       message:
         oneOf:
-          - $ref: '#/components/messages/simple-chat-private-message'
-          - $ref: '#/components/messages/simple-chat-message'
+          - $ref: '#/components/messages/send-channel-message'
+          - $ref: '#/components/messages/send-private-message'
     subscribe:
       description: Messages that you receive from the API
       message:
         oneOf:
-          - $ref: '#/components/messages/update-channel'
-          - $ref: '#/components/messages/update-private'
+          - $ref: '#/components/messages/update-channel-message'
+          - $ref: '#/components/messages/update-private-message'
 components:
   messages:
-    simple-chat-message:
+    send-channel-message:
       payload:
         type: object
         properties:
@@ -46,7 +43,7 @@ components:
             const: channelMessage
           payload:
             $ref: '#/components/schemas/ChannelMessagePayload'
-    simple-chat-private-message:
+    send-private-message:
       payload:
         type: object
         properties:
@@ -55,16 +52,16 @@ components:
             const: privateMessage
           payload:
             $ref: '#/components/schemas/PrivateMessagePayload'
-    update-channel:
+    update-channel-message:
       payload:
         type: object
         properties:
           type:
             type: string
-            const: message
+            const: channelMessage
           payload:
             $ref: '#/components/schemas/ChannelMessagePayload'
-    update-private:
+    update-private-message:
       payload:
         type: object
         properties:
@@ -75,21 +72,9 @@ components:
             $ref: '#/components/schemas/PrivateMessagePayload'
   schemas:
     ChannelMessagePayload:
-      type: object
-      properties:
-        type:
-          type: string
-          const: chat-message
-        payload:
-          $ref: '#/components/schemas/Message'
+      $ref: '#/components/schemas/Message'
     PrivateMessagePayload:
-      type: object
-      properties:
-        type:
-          type: string
-          const: open-message
-        payload:
-          $ref: '#/components/schemas/PrivateMessage'
+      $ref: '#/components/schemas/PrivateMessage'
     Message:
       title: Message
       type: object
