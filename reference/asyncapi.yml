@@ -36,47 +36,19 @@ components:
   messages:
     send-channel-message:
       payload:
-        type: object
-        properties:
-          type:
-            type: string
-            const: channelMessage
-          payload:
-            $ref: '#/components/schemas/ChannelMessagePayload'
+        $ref: '#/components/schemas/ChannelMessage'
     send-private-message:
       payload:
-        type: object
-        properties:
-          type:
-            type: string
-            const: privateMessage
-          payload:
-            $ref: '#/components/schemas/PrivateMessagePayload'
+        $ref: '#/components/schemas/PrivateMessage'
     update-channel-message:
       payload:
-        type: object
-        properties:
-          type:
-            type: string
-            const: channelMessage
-          payload:
-            $ref: '#/components/schemas/ChannelMessagePayload'
+        $ref: '#/components/schemas/ChannelMessage'
     update-private-message:
       payload:
-        type: object
-        properties:
-          type:
-            type: string
-            const: privateMessage
-          payload:
-            $ref: '#/components/schemas/PrivateMessagePayload'
+        $ref: '#/components/schemas/PrivateMessage'
   schemas:
-    ChannelMessagePayload:
-      $ref: '#/components/schemas/Message'
-    PrivateMessagePayload:
-      $ref: '#/components/schemas/PrivateMessage'
-    Message:
-      title: Message
+    ChannelMessage:
+      title: ChannelMessage
       type: object
       properties:
         server:
@@ -95,6 +67,17 @@ components:
         - channel
         - from
         - content
+      examples:
+        - server:
+            id: 26
+            name: 42Tokyo
+          channel:
+            id: 1
+            name: general
+          from:
+            id: 1
+            name: tkomatsu
+          content: hello world
     PrivateMessage:
       title: Private Message
       type: object
@@ -113,14 +96,18 @@ components:
         - to
         - from
         - content
+      examples:
+        - to:
+            id: 2
+            name: syudai
+          from:
+            id: 1
+            name: tkomatsu
+          content: hello world
     User:
       title: User
       type: object
-      description: ''
-      examples:
-        - id: 142
-          name: nop
-          email: nop@42tokyo.jp
+      description: Discord clone user entity
       properties:
         id:
           type: integer
@@ -131,9 +118,17 @@ components:
       required:
         - id
         - name
+      examples:
+        - id: 1
+          name: tkomatsu
+          email: tkomatsu@student.42tokyo.jp
+        - id: 2
+          name: syudai
+          email: syudai@student.42tokyo.jp
     Server:
       title: Server
       type: object
+      description: Server entity
       properties:
         id:
           type: integer
@@ -142,9 +137,15 @@ components:
       required:
         - id
         - name
+      examples:
+        - id: 26
+          name: 42Tokyo
+        - id: 27
+          name: times
     Channel:
       title: Channel
       type: object
+      description: Channel entity
       properties:
         id:
           type: integer
@@ -153,3 +154,8 @@ components:
       required:
         - id
         - name
+      examples:
+        - id: 1
+          name: general
+        - id: 2
+          name: randome
